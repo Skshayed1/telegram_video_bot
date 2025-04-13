@@ -1,20 +1,20 @@
-# Use an official Python runtime as a parent image
+# Use official Python base image
 FROM python:3.10-slim
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy project files
+COPY . .
 
-# Install system dependencies (including ffmpeg)
-RUN apt update && apt install -y ffmpeg
-
-# Install any needed packages specified in requirements.txt
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 8080 available to the world outside this container
+# Make static folder accessible
+RUN mkdir -p /app/static
+
+# Expose default port (optional)
 EXPOSE 8080
 
-# Run bot.py when the container launches
+# Start the bot
 CMD ["python", "bot.py"]
