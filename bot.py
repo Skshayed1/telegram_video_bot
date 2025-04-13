@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, filters, ContextTypes
 from ffmpeg_command import run_ffmpeg
 
-BOT_TOKEN = os.getenv("7566271591:AAH2D1vGfAIK8lZyEpacZEVWssA7KPSUpEY")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 logging.basicConfig(level=logging.INFO)
 
