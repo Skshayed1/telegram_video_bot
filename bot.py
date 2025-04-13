@@ -11,21 +11,23 @@ user_videos = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "👋 স্বাগতম! আপনি শুধু দুইটি ভিডিও পাঠান:
+        "👋 স্বাগতম!
 "
-        "1️⃣ একটি আপনার মেইন ভিডিও
+        "আপনি শুধু দুইটি ভিডিও পাঠান:
 "
-        "2️⃣ একটি আপনার 'মাই ভিডিও'
+        "১️⃣ একটি সাধারণ ভিডিও
+"
+        "২️⃣ একটি 'মাই ভিডিও'
 
 "
-        "আমি আপনার জন্য অসাধারণ কিছু তৈরি করে পাঠিয়ে দেব!"
+        "আমি অসাধারণ কিছু তৈরি করে ফেরত পাঠাবো! ✨"
     )
 
 async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     file = update.message.video or update.message.document
     if not file:
-        await update.message.reply_text("⚠️ দয়া করে একটি বৈধ ভিডিও পাঠান।")
+        await update.message.reply_text("⚠️ দয়া করে একটি বৈধ ভিডিও পাঠান।")
         return
 
     file_id = str(uuid.uuid4())[:8]
@@ -36,15 +38,15 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_videos.setdefault(user_id, []).append(file_path)
 
     if len(user_videos[user_id]) == 2:
-        await update.message.reply_text("⏳ আপনার ভিডিও প্রসেস করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...")
+        await update.message.reply_text("⏳ ভিডিও প্রসেস করা হচ্ছে, একটু অপেক্ষা করুন...")
         input1, input2 = user_videos[user_id]
         output_path = f"{user_id}_output.mp4"
         try:
             run_ffmpeg(input1, input2, output_path)
-            await update.message.reply_text("✅ প্রসেসিং সম্পন্ন! নিচে আপনার ভিডিও:")
+            await update.message.reply_text("✅ প্রসেসিং শেষ! নিচে আপনার ভিডিও:")
             await update.message.reply_video(video=open(output_path, 'rb'))
         except Exception as e:
-            await update.message.reply_text(f"❌ সমস্যা হয়েছে: {e}")
+            await update.message.reply_text(f"❌ সমস্যা হয়েছে: {e}")
         finally:
             for path in user_videos[user_id]:
                 if os.path.exists(path):
@@ -53,7 +55,7 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 os.remove(output_path)
             user_videos[user_id] = []
     else:
-        await update.message.reply_text("📥 একটি ভিডিও পেয়েছি! এখন আরেকটি পাঠান প্রসেসিং শুরু করার জন্য।")
+        await update.message.reply_text("📥 একটি ভিডিও পেলাম! এখন আরেকটি পাঠান যাতে প্রসেস শুরু করতে পারি।")
 
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start))
